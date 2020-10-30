@@ -35,10 +35,10 @@ def userReminderList(user):
             correctUser.append(objList[i])
     return correctUser
 
-
+ 
 if __name__ == "__main__": #just testing the code (can be ignored)
     objList = readReminder()
-    for x in range(0,objList):
+    for x in range(0,len(objList)):
         print(objList[x].user)
         print(objList[x].dateTime)
         print(objList[x].reminder)
