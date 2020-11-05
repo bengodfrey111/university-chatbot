@@ -5,7 +5,7 @@ class reminder:
     def __init__(self, user, dateTime, reminder): #constructor of all the variables in this object
         self.user = user
         self.dateTime = datetime.datetime.strptime(dateTime, '%Y-%m-%d %H:%M:%S.%f') #will make the datetime string into a datetime struct (make it easier to get different elements of the date and time)
-        self.reminder = reminder
+        self.reminder = reminder #learnt about datetime from stack overflow (https://stackoverflow.com/questions/415511/how-to-get-the-current-time-in-python)
 
 def readReminder():
     file = open("reminders.csv","r")
@@ -22,7 +22,7 @@ def writeReminder(toWrite): #this will write all the reminders to the reminders 
     fileArray = []
     for i in range(0,len(toWrite)):
         fileArray.append([toWrite[i].user,toWrite[i].dateTime,toWrite[i].reminder]) #this converts the object into a list so that it can be written to the csv file
-    file = open("reminders.csv","w",newline="")
+    file = open("reminders.csv","a",newline="")
     csvWrite = csv.writer(file,delimiter=",")
     csvWrite.writerows(fileArray)
     file.close()
