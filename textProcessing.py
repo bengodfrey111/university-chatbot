@@ -321,7 +321,7 @@ def setReminder(command, user, write = True):
         reminderSection["end"] = reminderSection["end"] - 1
         reminder = reminderStatement(words, reminderSection)
 
-    obj = storage.reminder(user, str(dateTime) + ".0000", reminder) #needed to make datetime a string since I wasn't using milliseconds and so doing it this way makes it easier to add that in
+    obj = storage.reminder(user, str(dateTime), reminder) #needed to make datetime a string since I wasn't using milliseconds and so doing it this way makes it easier to add that in
 
     if write == True:
         storage.appendReminder(obj)
@@ -330,7 +330,16 @@ def setReminder(command, user, write = True):
 
 
 #
-# def Reminder():
+def demandReminders(user): #will list all the reminders that the user has if the user asks for it
+    reminderObjList = storage.userReminderList(user)
+    if len(reminderObjList) > 0:
+        string = str(reminderObjList[0].dateTime) + " " + reminderObjList[0].reminder
+        for i in range(0,len(reminderObjList)):
+            string = "\n" + str(reminderObjList[i].dateTime) + " " + reminderObjList[i].reminder
+        return string
+    else:
+        return "you haven't got any reminders"
+
 
 
 if __name__ == "__main__": #this is just the test of the code, won't be main running file
@@ -338,6 +347,7 @@ if __name__ == "__main__": #this is just the test of the code, won't be main run
     print(datetime)
     print(reminder)
     print(timeSentence)
+    print(demandReminders("Ben13"))
     #timeChange = {"minutes" : 61, "hours" : 0, "days" : 58, "months" : 0, "years" : 0}
     #print(timeAddition(timeChange))
     #day, month, year = dateDetermineFromString("5/12/1995", ["/", "\\", "."])
