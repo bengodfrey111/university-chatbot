@@ -18,6 +18,16 @@ def readReminder():
     file.close()
     return objList
 
+def appendReminder(toWrite): #this will write all the reminders to the reminders file
+    objArray = [str(toWrite.user),str(toWrite.dateTime),str(toWrite.reminder)] #this converts the object into a list so that it can be written to the csv file
+    print(objArray)
+    file = open("reminders.csv","a",newline="")
+    csvWrite = csv.writer(file,delimiter=",")
+    csvWrite.writerows([objArray])
+    file.close()
+
+
+
 def writeReminder(toWrite): #this will write all the reminders to the reminders file
     fileArray = []
     for i in range(0,len(toWrite)):
@@ -36,9 +46,9 @@ def userReminderList(user):
     return correctUser
 
  
-if __name__ == "__main__": #just testing the code (can be ignored)
-    objList = readReminder()
-    for x in range(0,len(objList)):
-        print(objList[x].user)
-        print(objList[x].dateTime)
-        print(objList[x].reminder)
+#if __name__ == "__main__": #just testing the code (can be ignored)
+    #objList = readReminder()
+    #for x in range(0,len(objList)):
+        #print(objList[x].user)
+        #print(objList[x].dateTime)
+        #print(objList[x].reminder)
