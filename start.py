@@ -1,12 +1,39 @@
 import textProcessing, storage, datetime, threading, time #learnt threading in https://www.tutorialkart.com/python/python-multithreading/
 
+def isDateTimeLarger(dateTime, dateTime2): #since comparing the two datetimes with a simple if statement does not work that well
+    if dateTime.year > dateTime2.year: #if datetime is larger than datetime2 then it returns True
+        return True
+    elif dateTime.year == dateTime2.year:
+        if dateTime.month > dateTime2.month:
+            return True
+        elif dateTime.month == dateTime2.month:
+            if dateTime.day > dateTime2.day:
+                return True
+            elif dateTime.day == dateTime2.day:
+                if dateTime.hour > dateTime2.hour:
+                    return True
+                elif dateTime.hour == dateTime2.hour:
+                    if dateTime.minute >= dateTime2.minute:
+                        return True
+                    else:
+                        return False
+                else:
+                    return False
+            else:
+                return False
+        else:
+            return False
+    else:
+        return False
+
+
 def reminderChecker(): #this will check if a reminder would need to be displayed
     while True:
         now = datetime.datetime.now()
         reminderObjList = storage.readReminder()
         timedOutLoc = [] #location of the reminders that must be displayed (may or may not be in use)
         for i in range(0,len(reminderObjList)):
-            if reminderObjList[i].dateTime < now:
+            if isDateTimeLarger(now, reminderObjList[i].dateTime):
                 print("\n" + reminderObjList[i].user + ": " + reminderObjList[i].reminder)
                 timedOutLoc.append(i)
                 storage.deleteReminder(reminderObjList, i)

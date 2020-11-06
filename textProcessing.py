@@ -85,7 +85,7 @@ def addTimeDecipher(numberLoc, words, addTimeLoc): #this will try to get the dat
         
     if addTimeLoc != None:
         for i in range(0, len(numberLoc)):
-            numberInSentence = int(puncRemove(words[numberLoc[i]])) 
+            numberInSentence = int(removeLetters(words[numberLoc[i]])) 
             if numberLoc[i] + 1 < len(words):
                 if ("minute" in words[numberLoc[i] + 1].lower()): #this determines if there needs to be an addition of times (example could be the number means 3 hours later)
                     addTime["minute"] = numberInSentence + addTime["minute"]
@@ -105,7 +105,7 @@ def isNearMonth(words, numberLoc, months, monthAsNumber): #will try to see if a 
         twoBackAndFoward = words[numberLoc - 2] + words[numberLoc - 1] + words[numberLoc] + words[numberLoc + 1] + words[numberLoc + 2]
         if inArray(months, twoBackAndFoward):
             for i in range(0,len(months)):
-                if months[i] in twoBackAndFoward:
+                if months[i].lower() in twoBackAndFoward.lower():
                     return monthAsNumber[i] #returns the month as a number
         else:
             return None
@@ -115,8 +115,9 @@ def isNearMonth(words, numberLoc, months, monthAsNumber): #will try to see if a 
 
 def inArray(array, string): #will determine if a character in a string is the same as an element of an array
     for i in range(0,len(array)):
-        if array[i] in string:
+        if array[i].lower() in string.lower():
             return True
+    return False
 
 def timeDetermineFromString(time, timeDetermine, next): #will try and determine the time if the input is the time (written as hour:minute maybe am or pm which will be shown as next for next sentence)
     wordSplit = list(time)
@@ -125,10 +126,10 @@ def timeDetermineFromString(time, timeDetermine, next): #will try and determine 
             if timeDetermine[j] == wordSplit[i]:
                 if isInt(wordSplit[i - 1]): #determines the hours of the time
                     hour = wordSplit[i - 1]
-                    if isInt(wordSplit[i - 2]):
+                    if isInt(wordSplit[i - 2]) and i - 2 >= 0: #i - 2 >= 0 is there since if i - 2 is negative it would go to the end of an array which if its a number could get an additional 10 to 90 hours
                         hour = int(wordSplit[i - 2] + hour)
                     if not(int(hour) > 12):
-                        if next.lower() == "pm":
+                        if next.lower() == "pm" or "pm" in time:
                             hour = int(hour) + 12
                             if hour > 23:
                                 hour = 0
@@ -181,6 +182,14 @@ def removeLetters(string): #removes letters from a string
         if letters[i] in string:
             string = string.replace(letters[i],"")
     return string
+
+def makeTimeInt(timeDict): #this is to make all the variables in the time dictionaries an integer since they occasiaonaly don't come out as such
+    timeDict["minute"] = int(timeDict["minute"])
+    timeDict["hour"] = int(timeDict["hour"])
+    timeDict["day"] = int(timeDict["day"])
+    timeDict["month"] = int(timeDict["month"])
+    timeDict["year"] = int(timeDict["year"])
+    return timeDict
 
 def specificTimeDecipher(numberLoc, words, specificTimeLoc, timeSection): #will try to determine a specific time that was inputted (example is 1st of jan 2021 will be determined as year = 2021, month = 1, day = 1)
     time = {"minute" : 0, "hour" : 0, "day" : 0, "month" : 0, "year" : 0}
@@ -241,12 +250,12 @@ def specificTimeDecipher(numberLoc, words, specificTimeLoc, timeSection): #will 
                     time["month"] = month
                     time["year"] = year
                     break
-        return time
-    return time
+        return makeTimeInt(time) #ensures all values in time is an integer
+    return makeTimeInt(time)
 def arrayToString(array):
     string = str(array[0])
     for i in range(1,len(array)):
-        string = " " + str(array[i])
+        string = string + " " + str(array[i])
     return string
 
 def reminderStatement(words, reminderSection): #this will put the reminder together as a string
@@ -258,7 +267,8 @@ def reminderStatement(words, reminderSection): #this will put the reminder toget
 def specificTimeClean(specTime, addTime): #this is to make the specific time make sense, for example if you want a reminder at 3 am and its currently at 5pm you want 3 am the next day not the same day
     now = datetime.datetime.now()
     if specTime["hour"] != 0 and addTime["day"] == 0 and specTime["day"] == 0 and now.hour > specTime["hour"]:
-        addTime["day"] = addTime["day"] + 1
+        if specTime["minute"] <= now.minute:
+            addTime["day"] = addTime["day"] + 1
     if specTime["month"] != 0 and addTime["year"] == 0 and specTime["year"] == 0 and now.month > specTime["month"]:
         addTime["year"] = addTime["year"] + 1
     return addTime
@@ -292,7 +302,7 @@ def setReminder(command, user, write = True):
             reminderSection["start"] = startStateLoc
             reminderSection["end"] = TimeLoc + 1
         for i in range(timeSection["start"],timeSection["end"]): #this determines where the numbers are located in the sentence the user has inputted
-            if isInt(puncRemove(words[i])):
+            if isInt(removeLetters(words[i])):
                 numberLoc.append(i)
     else:
             reminderSection["start"] = startStateLoc
@@ -326,7 +336,7 @@ def setReminder(command, user, write = True):
     if write == True:
         storage.appendReminder(obj)
 
-    return str(dateTime), reminder, timeSentence
+    return "reminder " + str(obj.reminder) + " for " + str(obj.dateTime)
 
 
 #
@@ -343,14 +353,13 @@ def demandReminders(user): #will list all the reminders that the user has if the
 
 
 if __name__ == "__main__": #this is just the test of the code, won't be main running file
-    datetime, reminder, timeSentence = setReminder("remind me to wake up at 4pm", "Ben", False)
-    print(datetime)
-    print(reminder)
-    print(timeSentence)
-    print(demandReminders("Ben13"))
-    #timeChange = {"minutes" : 61, "hours" : 0, "days" : 58, "months" : 0, "years" : 0}
+    response = setReminder("set reminder for 8:30 tommorow to get out of bed", "Ben", False)
+    print(response)
+    #print(demandReminders("Ben13"))
+    #timeChange = {"minute" : 61, "hour" : 0, "day" : 0, "month" : 0, "year" : 0}
     #print(timeAddition(timeChange))
     #day, month, year = dateDetermineFromString("5/12/1995", ["/", "\\", "."])
     #print(day)
     #print(month)
     #print(year)
+    #print(setReminder("remind me to create a reminder at 9:08 pm", "Ben", False))
