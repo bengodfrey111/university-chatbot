@@ -12,6 +12,8 @@ def isInt(variable):
 def monthsToYears(monthsAdd):
     months = monthsAdd % 12
     years = int(monthsAdd / 12)
+    if months == 0:
+        months = 1
     return months, years
 
 def daysToMonth(daysAdd, time): #this is if the number of days exceed the amount of days in the month
@@ -119,7 +121,7 @@ def inArray(array, string): #will determine if a character in a string is the sa
             return True
     return False
 
-def timeDetermineFromString(time, timeDetermine, next): #will try and determine the time if the input is the time (written as hour:minute maybe am or pm which will be shown as next for next sentence)
+def timeDetermineFromString(time, timeDetermine, next = None): #will try and determine the time if the input is the time (written as hour:minute maybe am or pm which will be shown as next for next sentence)
     wordSplit = list(time)
     for i in range(0,len(wordSplit)):
         for j in range(0,len(timeDetermine)):
@@ -129,7 +131,7 @@ def timeDetermineFromString(time, timeDetermine, next): #will try and determine 
                     if isInt(wordSplit[i - 2]) and i - 2 >= 0: #i - 2 >= 0 is there since if i - 2 is negative it would go to the end of an array which if its a number could get an additional 10 to 90 hours
                         hour = int(wordSplit[i - 2] + hour)
                     if not(int(hour) > 12):
-                        if next.lower() == "pm" or "pm" in time:
+                        if (next != None and next.lower() == "pm") or "pm" in time:
                             hour = int(hour) + 12
                             if hour > 23:
                                 hour = 0
@@ -238,7 +240,10 @@ def specificTimeDecipher(numberLoc, words, specificTimeLoc, timeSection): #will 
                         time["month"] = monthAsNumber[j]
 
             for i in range(0,len(timeLoc)):
-                minute, hour = timeDetermineFromString(words[timeLoc[i]], timeDetermine, words[timeLoc[i] + 1])
+                if timeLoc[i] + 1 < len(words):
+                    minute, hour = timeDetermineFromString(words[timeLoc[i]], timeDetermine, words[timeLoc[i] + 1])
+                else:
+                    minute, hour = timeDetermineFromString(words[timeLoc[i]], timeDetermine)
                 if minute != None and hour != None:
                     time["minute"] = minute
                     time["hour"] = hour
@@ -313,6 +318,8 @@ def setReminder(command, user, write = True):
     addTimeAddition = specificTimeClean(futureTime, addTimeAddition)
     now = datetime.datetime.now() #need to do this since you can't have 0 year and 0 month
     futurePlusCurrent = futureTime
+    if futurePlusCurrent["minute"] == 0:
+        futurePlusCurrent["minute"] = now.minute
     if futurePlusCurrent["hour"] == 0:
         futurePlusCurrent["hour"] = now.hour
     if futurePlusCurrent["day"] == 0:
@@ -353,7 +360,7 @@ def demandReminders(user): #will list all the reminders that the user has if the
 
 
 if __name__ == "__main__": #this is just the test of the code, won't be main running file
-    response = setReminder("set reminder for 8:30 tommorow to get out of bed", "Ben", False)
+    response = setReminder("set reminder in a month to do my homework", "Ben", False)
     print(response)
     #print(demandReminders("Ben13"))
     #timeChange = {"minute" : 61, "hour" : 0, "day" : 0, "month" : 0, "year" : 0}
