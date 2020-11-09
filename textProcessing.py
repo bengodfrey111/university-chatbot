@@ -9,10 +9,10 @@ def isInt(variable):
     except ValueError:
         return False
 
-def monthsToYears(monthsAdd):
+def monthsToYears(monthsAdd, nowTime = True):
     months = monthsAdd % 12
     years = int(monthsAdd / 12)
-    if months == 0:
+    if months == 0 and nowTime == True: #avoid month = 0 for actual time
         months = 1
     return months, years
 
@@ -46,7 +46,7 @@ def minutesToHours(minutesAdd):
 def dictToDateTime(dict):
     return datetime.datetime(dict["year"], dict["month"], dict["day"], dict["hour"], dict["minute"], 0)
 
-def timeAddition(timeChange, now = datetime.datetime.now()):
+def timeAddition(timeChange, now = datetime.datetime.now(), nowTime = True):
     minutes, hours = minutesToHours(timeChange["minute"] + now.minute) #this section just makes the time more convienient to work with (example is 69 minutes will turn into 1 hour and 9 minutes)
     timeChange["minute"] = minutes
     timeChange["hour"] = timeChange["hour"] + hours
@@ -56,7 +56,7 @@ def timeAddition(timeChange, now = datetime.datetime.now()):
     days, months = daysToMonth(timeChange["day"] + now.day, now)
     timeChange["day"] = days
     timeChange["month"] = timeChange["month"] + months
-    months, years = monthsToYears(timeChange["month"] + now.month)
+    months, years = monthsToYears(timeChange["month"] + now.month, nowTime)
     timeChange["month"] = months
     timeChange["year"] = timeChange["year"] + years + now.year
     return timeChange
@@ -329,7 +329,7 @@ def setReminder(command, user, write = True):
     if futurePlusCurrent["year"] == 0:
         futurePlusCurrent["year"] = now.year
     
-    time = timeAddition(addTimeAddition, dictToDateTime(futurePlusCurrent)) #adding them since people may have specified some parts of the desired time and not specified the other parts
+    time = timeAddition(addTimeAddition, dictToDateTime(futurePlusCurrent), False) #adding them since people may have specified some parts of the desired time and not specified the other parts
     reminder = reminderStatement(words, reminderSection)
     timeSentence = reminderStatement(words, timeSection) #just to check where the program thinks the time is
     dateTime = dictToDateTime(time)
@@ -360,11 +360,11 @@ def demandReminders(user): #will list all the reminders that the user has if the
 
 
 if __name__ == "__main__": #this is just the test of the code, won't be main running file
-    response = setReminder("set reminder in a month to do my homework", "Ben", False)
-    print(response)
+    #response = setReminder("set reminder in a month to do my homework", "Ben", False)
+    #print(response)
     #print(demandReminders("Ben13"))
-    #timeChange = {"minute" : 61, "hour" : 0, "day" : 0, "month" : 0, "year" : 0}
-    #print(timeAddition(timeChange))
+    timeChange = {"minute" : 61, "hour" : 0, "day" : 0, "month" : 13, "year" : 0}
+    print(timeAddition(timeChange))
     #day, month, year = dateDetermineFromString("5/12/1995", ["/", "\\", "."])
     #print(day)
     #print(month)
