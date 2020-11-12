@@ -2,6 +2,7 @@ import storage
 import datetime
 import calendar #https://stackoverflow.com/questions/9481136/how-to-find-number-of-days-in-the-current-month
 import time
+
 def isInt(variable):
     try:
         variable = int(variable)
@@ -16,15 +17,15 @@ def monthsToYears(monthsAdd, nowTime = True):
         months = 1
     return months, years
 
-def daysToMonth(daysAdd, time): #this is if the number of days exceed the amount of days in the month
+def daysToMonth(daysAdd, time, nowTime): #this is if the number of days exceed the amount of days in the month
     currentDaysInMonth = calendar.monthrange(time.year, time.month)[1]
     months = 0
     days = daysAdd
     while True:
         months = int(days / currentDaysInMonth)
         days = days % currentDaysInMonth
-        months, years = monthsToYears(months)
-        monthSec, years = monthsToYears(months + time.month)
+        months, years = monthsToYears(months, nowTime)
+        monthSec, years = monthsToYears(months + time.month, nowTime)
         currentDaysInMonth = calendar.monthrange(time.year + years, monthSec)[1]
         if days < currentDaysInMonth:
             break
@@ -53,7 +54,7 @@ def timeAddition(timeChange, now = datetime.datetime.now(), nowTime = True):
     hours, days = hoursToDays(timeChange["hour"] + now.hour)
     timeChange["hour"] = hours
     timeChange["day"] = timeChange["day"] + days
-    days, months = daysToMonth(timeChange["day"] + now.day, now)
+    days, months = daysToMonth(timeChange["day"] + now.day, now, nowTime)
     timeChange["day"] = days
     timeChange["month"] = timeChange["month"] + months
     months, years = monthsToYears(timeChange["month"] + now.month, nowTime)
@@ -105,7 +106,7 @@ def addTimeDecipher(numberLoc, words, addTimeLoc): #this will try to get the dat
 def isNearMonth(words, numberLoc, months, monthAsNumber): #will try to see if a month is nearby
     if numberLoc + 2 < len(words):
         twoBackAndFoward = words[numberLoc - 2] + words[numberLoc - 1] + words[numberLoc] + words[numberLoc + 1] + words[numberLoc + 2]
-        if inArray(months, twoBackAndFoward):
+        if inArray(months.lower(), twoBackAndFoward.lower()): #I know this is a bit inefficient but its a bit easier and faster to program and has insignificant performance impact
             for i in range(0,len(months)):
                 if months[i].lower() in twoBackAndFoward.lower():
                     return monthAsNumber[i] #returns the month as a number
@@ -201,6 +202,12 @@ def specificTimeDecipher(numberLoc, words, specificTimeLoc, timeSection): #will 
     dateAsNumDetermine = ["/", "\\", "."] #punctuation that will determine the date (example would be 3/11/2020 would mean day = 3, month = 1, year = 2020) note it will not be the american format
     for i in range(0,len(months)): #this will act as a way to convert a month into a number (example jan = 1, feb = 2)
         monthAsNumber.append(i + 1)
+    for i in range(timeSection["start"],timeSection["end"]): #sometimes a month isn't near a number so you have to look through every word in the section
+        if inArray(months, words[i].lower()):
+            for j in range(0,len(months)):
+                if months[j] in words[i].lower():
+                    time["month"] = monthAsNumber[j]
+
     if specificTimeLoc != None:
         month = None
         for i in range(0, len(numberLoc)):
@@ -318,7 +325,7 @@ def setReminder(command, user, write = True):
     addTimeAddition = specificTimeClean(futureTime, addTimeAddition)
     now = datetime.datetime.now() #need to do this since you can't have 0 year and 0 month
     futurePlusCurrent = futureTime
-    if futurePlusCurrent["minute"] == 0:
+    if futurePlusCurrent["minute"] == 0 and futurePlusCurrent["hour"] == 0: #since if the hour does not equal 0 then its generally assumed the person wants 0 minutes (example is someone who says 4pm won't want the time to be saved as 16:00 instead of 16:09)
         futurePlusCurrent["minute"] = now.minute
     if futurePlusCurrent["hour"] == 0:
         futurePlusCurrent["hour"] = now.hour
@@ -347,7 +354,7 @@ def setReminder(command, user, write = True):
 
 
 #
-def demandReminders(user): #will list all the reminders that the user has if the user asks for it
+def sayReminders(user): #will list all the reminders that the user has if the user asks for it
     reminderObjList = storage.userReminderList(user)
     if len(reminderObjList) > 0:
         string = str(reminderObjList[0].dateTime) + " " + reminderObjList[0].reminder
@@ -358,15 +365,26 @@ def demandReminders(user): #will list all the reminders that the user has if the
         return "you haven't got any reminders"
 
 
+def testing(): #this just test a variety of inputs
+    commands = []
+    outputs = []
+    commands.append("set reminder at 3:30am tommorow to fall asleep")
+    outputs.append("reminder to fall asleep for 2020-11-10 03:30:00")
+    for i in range(0,len(commands)):
+        assert setReminder(commands[i],"Ben",False) == outputs[i]
+
 
 if __name__ == "__main__": #this is just the test of the code, won't be main running file
-    #response = setReminder("set reminder in a month to do my homework", "Ben", False)
-    #print(response)
+    response = setReminder("set reminder to stay awake at 3:30 Febuary", "Ben", False)
+    print(response)
+    #testing()
     #print(demandReminders("Ben13"))
-    timeChange = {"minute" : 61, "hour" : 0, "day" : 0, "month" : 13, "year" : 0}
-    print(timeAddition(timeChange))
+    #timeChange = {"minute" : 61, "hour" : 0, "day" : 0, "month" : 13, "year" : 0}
+    #print(timeAddition(timeChange))
     #day, month, year = dateDetermineFromString("5/12/1995", ["/", "\\", "."])
     #print(day)
     #print(month)
     #print(year)
     #print(setReminder("remind me to create a reminder at 9:08 pm", "Ben", False))
+
+    #note, when giving a specific month sometimes it would add a day to it when a specific time below the current time is specified but not the day
