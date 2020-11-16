@@ -339,7 +339,7 @@ def setReminder(command, user, write = True):
     time = timeAddition(addTimeAddition, dictToDateTime(futurePlusCurrent), False) #adding them since people may have specified some parts of the desired time and not specified the other parts
     reminder = reminderStatement(words, reminderSection)
     timeSentence = reminderStatement(words, timeSection) #just to check where the program thinks the time is
-    dateTime = dictToDateTime(time)
+    dateTime = dictToDateTime(time) #converting the dictionary to a datetime struct because it would automatically send out an error if there is an illegal date or time (example month 0 cannot exist and minute 67 can't exits)
     reminderSplit = reminder.split() #just to get rid of an unneccsary word that sometime comes up at the end
     if inArray(TimeIndicator, reminderSplit[len(reminderSplit) - 1]):
         reminderSection["end"] = reminderSection["end"] - 1
