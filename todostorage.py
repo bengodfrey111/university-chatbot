@@ -19,6 +19,20 @@ def ToDoSpecific (TaskID):
     for i in range (0,len(File)):
         if str(TaskID)==str(File[i]["TaskID"]):
             return i+1
+
+def toDoWrite(file): #function created by Ben G
+    finalArray = []
+    finalArray.append(["","","Date Start", "Date Due"])
+    finalArray.append(["","",file[0]["DateStart"], file[0]["DateDue"]])
+    finalArray.append(["TaskID", "Task", "UserName", "Completed", "Task Difficulty"])
+    for i in range(0,len(file)):
+        cLine = file[i]
+        finalArray.append([cLine["TaskID"], cLine["Task"], cLine["User"], cLine["Completed"], cLine["TaskDifficulty"]])
+    file = open("toDoStorage.csv","w",newline="")
+    csvWrite = csv.writer(file,delimiter=",")
+    csvWrite.writerows(finalArray)
+    file.close()
+
 if __name__ == "__main__":
     TaskID = input("what is taskID")
     print(ToDoSpecific(TaskID))
