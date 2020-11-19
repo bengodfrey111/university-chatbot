@@ -3,7 +3,7 @@ import datetime
 import calendar #https://stackoverflow.com/questions/9481136/how-to-find-number-of-days-in-the-current-month
 import time
 
-def isInt(variable):
+def isInt(variable): #determines if an inputted variable can be a string
     try:
         variable = int(variable)
         return True
@@ -264,7 +264,8 @@ def specificTimeDecipher(numberLoc, words, specificTimeLoc, timeSection): #will 
                     break
         return makeTimeInt(time) #ensures all values in time is an integer
     return makeTimeInt(time)
-def arrayToString(array):
+
+def arrayToString(array): #makes an array of characters into a string of characters
     string = str(array[0])
     for i in range(1,len(array)):
         string = string + " " + str(array[i])
