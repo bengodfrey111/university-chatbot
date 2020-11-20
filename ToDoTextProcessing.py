@@ -26,13 +26,16 @@ def daysDelta(): #FUNCTION Created by Ben G
     file = todostorage.toDoRead()
     now = datetime.datetime.now()
     now = datetime.datetime(now.year, now.month, now.day) #gets rid of the time since taht won't be needed
-    startDate = datetime.datetime.strptime(file[0]["DateStart"], '%d/%m/%Y') #all dates for each task has the same times (note year has to be full 2020 not just 20)
-    endDate = datetime.datetime.strptime(file[0]["DateDue"], '%d/%m/%Y')
+    startDay, startMonth, startYear = textProcessing.dateDetermineFromString(file[0]["DateStart"], ["/", "\\", "."])
+    endDay, endMonth, endYear = textProcessing.dateDetermineFromString(file[0]["DateDue"], ["/", "\\", "."])
+    startDate = datetime.datetime(startYear, startMonth, startDay) #all dates for each task has the same times (note year has to be full 2020 not just 20)
+    endDate = datetime.datetime(endYear, endMonth, endDay)
     elapsedDays = now - startDate
     maxDays = endDate - startDate
     elapsedDays = (elapsedDays.total_seconds()) / (60*60*24) #makes the only unit of measurement of time I have to work with days
     maxDays = (maxDays.total_seconds()) / (60*60*24)
     
+
     maxPoints = 0
     currentPoints = 0
     for i in range(0,len(file)):
@@ -52,6 +55,7 @@ def daysDelta(): #FUNCTION Created by Ben G
     dayDelta = pointsDelta / pointsPDay
 
     return dayDelta
+
 
 print(chatbotread("what"))
 
