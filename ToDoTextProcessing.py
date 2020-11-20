@@ -38,7 +38,7 @@ def daysDelta(): #FUNCTION Created by Ben G
 
     maxPoints = 0
     currentPoints = 0
-    for i in range(0,len(file)):
+    for i in range(0,len(file)): #this counts all the points that are possible to get and the amount of points that have currently been earned
         file[i] = TaskDifCheck(file[i])
         maxPoints = maxPoints + float(file[i]["TaskDifficulty"])
         if "progress" in file[i]["Completed"]:
@@ -55,7 +55,6 @@ def daysDelta(): #FUNCTION Created by Ben G
     dayDelta = pointsDelta / pointsPDay
 
     return dayDelta
-
 
 print(chatbotread("what"))
 
