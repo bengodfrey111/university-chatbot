@@ -409,7 +409,7 @@ if __name__ == "__main__": #this is just the test of the code, won't be main run
     #print(demandReminders("Ben13"))
     #timeChange = {"minute" : 61, "hour" : 0, "day" : 0, "month" : 13, "year" : 0}
     #print(timeAddition(timeChange))
-    #day, month, year = dateDetermineFromString("5/12/1995", ["/", "\\", "."])
+    #day, month, year = dateDetermineFromString("5/12/23", ["/", "\\", "."])
     #print(day)
     #print(month)
     #print(year)

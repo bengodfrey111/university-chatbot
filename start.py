@@ -54,7 +54,7 @@ def mChatbot(command, user):
         response = textProcessing.sayReminders(user)
     elif ("what" in command and "task" in command) or ("list" in command and "task" in command):
         pass
-    elif ("complete" in command and "task" in command and textProcessing.inArray(["1","2","3","4","5","6","7","8","9"],command)): #checks if a number is in command
+    elif (("complete" in command or "doing" in command or "drop" in command) and "task" in command and textProcessing.inArray(["1","2","3","4","5","6","7","8","9"],command)): #checks if a number is in command
         pass
     elif "weather" in command:
         pass
@@ -63,7 +63,7 @@ def mChatbot(command, user):
 if __name__ == "__main__":
     remindCheck = threading.Thread(target=reminderChecker, name="remindCheck") #starts the thread of the reminder checker (depends on how far we get it may or may not be useful)
     remindCheck.start()
-    time.sleep(0.1) #delay so that the two threads don't print at the same time
+    time.sleep(0.1)
     textCommand = threading.Thread(target=inputTest, name="textCommand") #the user name is just there till we find a better solution
     textCommand.start()
 

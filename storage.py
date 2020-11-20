@@ -19,7 +19,6 @@ def readReminder():
 
 def appendReminder(toWrite): #this will write all the reminders to the reminders file
     objArray = [str(toWrite.user),str(toWrite.dateTime),str(toWrite.reminder)] #this converts the object into a list so that it can be written to the csv file
-    print(objArray)
     file = open("reminders.csv","a",newline="")
     csvWrite = csv.writer(file,delimiter=",")
     csvWrite.writerows([objArray])
