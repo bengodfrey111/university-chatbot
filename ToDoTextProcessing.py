@@ -5,13 +5,52 @@ def chatbotread(command):
     chatbotkeys = ["what", "who", "get", "grab", "show", ]
     keysNotStart = ["free", "not started"]
     inProgress = ["in progress"]
-    CompletedTasks = ["Completed"]
+    CompletedTasks = ["completed", "done"]
+    notCompleted = [""]
     ChatbotFile = ""
     if (textProcessing.inArray(chatbotkeys, command)):#Bens FUNCTION
         file = todostorage.toDoRead()
-        for i in range(0,len(file)):
-            ChatbotFile = ChatbotFile + "TaskId: " + file[i]["TaskID,"] + " Task: " + file[i]["Task"] + " DateStart: " + file[i]["DateStart"] + " DateDue: " + file[i]["DateDue"] + " User: " +  file[i]["User"] + " Completed: " + file[i]["Completed"]+ " TaskDifficulty: " + file[i]["TaskDifficulty"] +"\n"
+        if textProcessing.inArray(CompletedTasks,command):
+            for i in range(0,len(file)):
+                if file[i]["Completed"].lower() == "completed":
+                    ChatbotFile = ChatbotFile + "TaskId: " + file[i]["TaskID"] + " Task: " + file[i]["Task"] + " DateStart: " + file[i]["DateStart"] + " DateDue: " + file[i]["DateDue"] + " User: " +  file[i]["User"] + " Completed: " + file[i]["Completed"]+ " TaskDifficulty: " + file[i]["TaskDifficulty"] +"\n"
+        elif textProcessing.inArray(inProgress,command):
+            for i in range(0,len(file)):
+                if file[i]["Completed"] == "in progress":
+                    ChatbotFile = ChatbotFile + "TaskId: " + file[i]["TaskID"] + " Task: " + file[i]["Task"] + " DateStart: " + file[i]["DateStart"] + " DateDue: " + file[i]["DateDue"] + " User: " +  file[i]["User"] + " Completed: " + file[i]["Completed"]+ " TaskDifficulty: " + file[i]["TaskDifficulty"] +"\n"
+        elif textProcessing.inArray(notCompleted,command):
+            for i in range(0,len(file)):
+                if file[i]["Completed"].lower() == "i":
+                    ChatbotFile = ChatbotFile + "TaskId: " + file[i]["TaskID"] + " Task: " + file[i]["Task"] + " DateStart: " + file[i]["DateStart"] + " DateDue: " + file[i]["DateDue"] + " User: " +  file[i]["User"] + " Completed: " + file[i]["Completed"]+ " TaskDifficulty: " + file[i]["TaskDifficulty"] +"\n"
     return ChatbotFile
+
+def AssignTask(Username, command ):
+    completed = ["complete", "completed", "done", "finished"]
+    inprogress = ["completing", "started", "starting", "initiating"]
+    taskIDIndicator = ["task"]
+    if textProcessing.inArray(taskIDIndicator, command):
+        wordSplit = command.split()
+        for i in range(0,len(wordSplit)):
+            if textProcessing.inArray(taskIDIndicator, wordSplit[i].lower()):
+                if len(wordSplit) > i + 1:
+                    if textProcessing.isInt(wordSplit[i + 1]):
+                        TaskID =  wordSplit[i + 1]
+                    elif len(wordSplit) > i + 2:
+                        if textProcessing.isInt(wordSplit[i + 2]):
+                            TaskID = wordSplit[i + 2]
+                    else:
+                        TaskID = None
+                else:
+                    TaskID = None
+
+    if TaskID != None:
+        completedStatus = ""
+        if (textProcessing.inArray(completed, command)):
+            completedStatus = "completed"
+        elif (textProcessing.inArray(inprogress, command)):
+            completedStatus = "in progress"
+
+        todostorage.todoEdit(Username, completedStatus, TaskID)
 
 def TaskDifCheck(line): #checks if the task difficulty has been inputted correctly (made by Ben G)
     if textProcessing.isInt(line["TaskDifficulty"]):

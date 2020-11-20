@@ -13,13 +13,26 @@ def toDoRead():
         toDoList.append(toDo)
     return toDoList
 
-File = toDoRead()
+
+def todoEdit(User, Completed, TaskID):
+    file = toDoRead()
+    for i in range(len(file)):
+        if str(TaskID)==str(file[i]["TaskID"]):
+            file[i]["User"] = User
+            file[i]["Completed"] = Completed
+
+    todowrite(file)
+
+
 def ToDoSpecific (TaskID):
     File = toDoRead()
     for i in range (0,len(File)):
         if str(TaskID)==str(File[i]["TaskID"]):
             return i+1
-
+if __name__ == "__main__":
+    TaskID = input("what is taskID")
+    print(ToDoSpecific(TaskID))
+    
 def toDoWrite(file): #function created by Ben G
     finalArray = []
     finalArray.append(["","","Date Start", "Date Due"])
