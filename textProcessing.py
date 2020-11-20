@@ -108,7 +108,7 @@ def addTimeDecipher(numberLoc, words, addTimeLoc): #this will try to get the dat
 def isNearMonth(words, numberLoc, months, monthAsNumber): #will try to see if a month is nearby
     if numberLoc + 2 < len(words):
         twoBackAndFoward = words[numberLoc - 2] + words[numberLoc - 1] + words[numberLoc] + words[numberLoc + 1] + words[numberLoc + 2]
-        if inArray(months.lower(), twoBackAndFoward.lower()): #I know this is a bit inefficient but its a bit easier and faster to program and has insignificant performance impact
+        if inArray(months, twoBackAndFoward.lower()): #I know this is a bit inefficient but its a bit easier and faster to program and has insignificant performance impact
             for i in range(0,len(months)):
                 if months[i].lower() in twoBackAndFoward.lower():
                     return monthAsNumber[i] #returns the month as a number
@@ -403,7 +403,7 @@ def testing(): #this just test a variety of inputs
 
 
 if __name__ == "__main__": #this is just the test of the code, won't be main running file
-    response = setReminder("set reminder for 3:54pm March to stay awake", "Ben", False)
+    response = setReminder("set reminder for 3:54pm March 2033 to stay awake", "Ben", False)
     print(response)
     #testing()
     #print(demandReminders("Ben13"))
