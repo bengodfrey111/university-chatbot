@@ -40,16 +40,16 @@ def reminderChecker(): #this will check if a reminder would need to be displayed
         time.sleep(5) #this delays the code by some seconds so that it won't consume a siginificant amount of cpu power
 
 
-def initialTextProcess(user):
+def inputTest():
     while True:
         command = input()
-        response = mChatbot(command, user)
+        response = mChatbot(command, "Ben")
         print(response)
 
 def mChatbot(command, user):
     response = ""
     if "remind me" in command or "set remind" in command:
-        response = textProcessing.setReminder(command, user, False)
+        response = textProcessing.setReminder(command, user)
     elif ("what" in command and "reminder" in command):
         response = textProcessing.sayReminders(user)
     elif ("what" in command and "task" in command) or ("list" in command and "task" in command):
@@ -64,8 +64,8 @@ if __name__ == "__main__":
     remindCheck = threading.Thread(target=reminderChecker, name="remindCheck") #starts the thread of the reminder checker (depends on how far we get it may or may not be useful)
     remindCheck.start()
     time.sleep(0.1) #delay so that the two threads don't print at the same time
-    textCommand = threading.Thread(target=initialTextProcess, name="textCommand", args=("Ben",)) #the user name is just there till we find a better solution
+    textCommand = threading.Thread(target=inputTest, name="textCommand") #the user name is just there till we find a better solution
     textCommand.start()
 
 
-#the asyncornous is temporary (just proving reminderrs are working)
+#the asyncornous is temporary (just proving reminders are working)
