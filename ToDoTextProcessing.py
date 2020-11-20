@@ -47,6 +47,7 @@ def daysDelta(): #FUNCTION Created by Ben G
 
     expectedPoints = pointsPDay * elapsedDays
 
+
     pointsDelta = currentPoints - expectedPoints
     dayDelta = pointsDelta / pointsPDay
 

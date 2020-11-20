@@ -10,11 +10,9 @@ def isInt(variable): #determines if an inputted variable can be a string
     except ValueError:
         return False
 
-def monthsToYears(monthsAdd, nowTime = True):
+def monthsToYears(monthsAdd):
     months = monthsAdd % 12
     years = int(monthsAdd / 12)
-    if months == 0 and nowTime == True: #avoid month = 0 for actual time
-        months = 1
     return months, years
 
 def daysToMonth(daysAdd, time, nowTime): #this is if the number of days exceed the amount of days in the month
@@ -24,8 +22,10 @@ def daysToMonth(daysAdd, time, nowTime): #this is if the number of days exceed t
     while True:
         months = int(days / currentDaysInMonth)
         days = days % currentDaysInMonth
-        months, years = monthsToYears(months, nowTime)
-        monthSec, years = monthsToYears(months + time.month, nowTime)
+        months, years = monthsToYears(months)
+        monthSec, years = monthsToYears(months + time.month)
+        if monthSec == 0:
+            monthSec = 12
         currentDaysInMonth = calendar.monthrange(time.year + years, monthSec)[1]
         if days < currentDaysInMonth:
             break
@@ -57,9 +57,11 @@ def timeAddition(timeChange, now = datetime.datetime.now(), nowTime = True):
     days, months = daysToMonth(timeChange["day"] + now.day, now, nowTime)
     timeChange["day"] = days
     timeChange["month"] = timeChange["month"] + months
-    months, years = monthsToYears(timeChange["month"] + now.month, nowTime)
+    months, years = monthsToYears(timeChange["month"] + now.month)
     timeChange["month"] = months
     timeChange["year"] = timeChange["year"] + years + now.year
+    if timeChange["month"] == 0:
+        timeChange["month"] = 12
     return timeChange
 
 def puncRemove(string):
@@ -286,6 +288,19 @@ def specificTimeClean(specTime, addTime): #this is to make the specific time mak
         addTime["year"] = addTime["year"] + 1
     return addTime
 
+def CheckUnspoken(time, startPos): #this is one of the checks for if parts of the date or time should be its minimum (example if someone only specifies only the month of febuary then you don't want to get 15:30 3rd of Febuary you want 00:00 1 Febuary)
+    timeMeasurements = ["minute", "hour", "day", "month", "year"]
+    startPosNum = 0
+    for i in range(0,len(timeMeasurements)):
+        if timeMeasurements[i] == startPos:
+            startPosNum = i
+    
+    for i in range(startPosNum + 1, len(timeMeasurements)):
+        if time[timeMeasurements[i]] != 0:
+            return True
+
+    return False
+
 
 def setReminder(command, user, write = True):
     words = command.split()
@@ -326,14 +341,26 @@ def setReminder(command, user, write = True):
     addTimeAddition = specificTimeClean(futureTime, addTimeAddition)
     now = datetime.datetime.now() #need to do this since you can't have 0 year and 0 month
     futurePlusCurrent = futureTime
-    if futurePlusCurrent["minute"] == 0 and futurePlusCurrent["hour"] == 0: #since if the hour does not equal 0 then its generally assumed the person wants 0 minutes (example is someone who says 4pm won't want the time to be saved as 16:00 instead of 16:09)
-        futurePlusCurrent["minute"] = now.minute
+    if futurePlusCurrent["minute"] == 0: #this will construct a specific time that makes sense (saying febuary will bring 00:00 1 feb) and also won't have something such as month 0 occuring
+        if CheckUnspoken(futurePlusCurrent, "minute"):
+            futurePlusCurrent["minute"] = 0
+        else:
+            futurePlusCurrent["minute"] = now.minute
     if futurePlusCurrent["hour"] == 0:
-        futurePlusCurrent["hour"] = now.hour
+        if CheckUnspoken(futurePlusCurrent, "hour"):
+            futurePlusCurrent["hour"] = 0
+        else:
+            futurePlusCurrent["hour"] = now.hour
     if futurePlusCurrent["day"] == 0:
-        futurePlusCurrent["day"] = now.day
+        if CheckUnspoken(futurePlusCurrent, "day"):
+            futurePlusCurrent["day"] = 1
+        else:
+            futurePlusCurrent["day"] = now.day
     if futurePlusCurrent["month"] == 0:
-        futurePlusCurrent["month"] = now.month
+        if CheckUnspoken(futurePlusCurrent, "month"):
+            futurePlusCurrent["month"] = 1
+        else:
+            futurePlusCurrent["month"] = now.month
     if futurePlusCurrent["year"] == 0:
         futurePlusCurrent["year"] = now.year
     
@@ -376,7 +403,7 @@ def testing(): #this just test a variety of inputs
 
 
 if __name__ == "__main__": #this is just the test of the code, won't be main running file
-    response = setReminder("set reminder to stay awake at 3:30 Febuary", "Ben", False)
+    response = setReminder("set reminder for 3:54pm March to stay awake", "Ben", False)
     print(response)
     #testing()
     #print(demandReminders("Ben13"))
@@ -387,5 +414,3 @@ if __name__ == "__main__": #this is just the test of the code, won't be main run
     #print(month)
     #print(year)
     #print(setReminder("remind me to create a reminder at 9:08 pm", "Ben", False))
-
-    #note, when giving a specific month sometimes it would add a day to it when a specific time below the current time is specified but not the day
