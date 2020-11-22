@@ -1,4 +1,4 @@
-import textProcessing, storage, datetime, threading, time #learnt threading in https://www.tutorialkart.com/python/python-multithreading/
+import textProcessing, ToDoTextProcessing, storage, datetime, threading, time #learnt threading in https://www.tutorialkart.com/python/python-multithreading/
 
 def isDateTimeLarger(dateTime, dateTime2): #since comparing the two datetimes with a simple if statement does not work that well
     if dateTime.year > dateTime2.year: #if datetime is larger than datetime2 then it returns True
@@ -48,15 +48,21 @@ def inputTest():
 
 def mChatbot(command, user):
     response = ""
-    if "remind me" in command or "set remind" in command:
+    lCommand = command.lower()
+    assignTaskCompleted = ["complete", "completed", "done", "finished"]
+    assignTaskInProgress = ["completing", "started", "starting", "initiating", "doing"]
+    assignTaskDropped = ["dropped", "stopped"]
+    if "remind me" in lCommand or "set remind" in lCommand:
         response = textProcessing.setReminder(command, user)
-    elif ("what" in command and "reminder" in command):
+    elif ("what" in lCommand and "reminder" in lCommand):
         response = textProcessing.sayReminders(user)
-    elif ("what" in command and "task" in command) or ("list" in command and "task" in command):
-        pass
-    elif (("complete" in command or "doing" in command or "drop" in command) and "task" in command and textProcessing.inArray(["1","2","3","4","5","6","7","8","9"],command)): #checks if a number is in command
-        pass
-    elif "weather" in command:
+    elif ("what" in lCommand and "task" in lCommand) or ("list" in lCommand and "task" in lCommand):
+        response = ToDoTextProcessing.chatbotread(command)
+    elif (textProcessing.inArray(assignTaskCompleted, lCommand) or textProcessing.inArray(assignTaskInProgress, lCommand) or textProcessing.inArray(assignTaskDropped, lCommand)) and "task" in lCommand and textProcessing.inArray(["1","2","3","4","5","6","7","8","9"],command): #checks if a number is in command
+        ToDoTextProcessing.AssignTask(user, command )
+    elif "on track" in lCommand and "is" in lCommand and "project" in lCommand:
+        response = ToDoTextProcessing.daysDelta()
+    elif "weather" in lCommand:
         pass
     return response
 

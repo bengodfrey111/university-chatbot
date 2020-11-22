@@ -2,13 +2,13 @@ import todostorage, textProcessing, datetime
 #File = todostorage.toDoRead()
 #print(File)
 def chatbotread(command):
-    chatbotkeys = ["what", "who", "get", "grab", "show", ]
+    chatbotkeys = ["what", "who", "get", "grab", "show", "task", "list"]
     keysNotStart = ["free", "not started"]
     inProgress = ["in progress"]
     CompletedTasks = ["completed", "done"]
     notCompleted = [""]
     ChatbotFile = ""
-    if (textProcessing.inArray(chatbotkeys, command)):#Bens FUNCTION
+    if (textProcessing.inArray(chatbotkeys, command)):#Ben G FUNCTION
         file = todostorage.toDoRead()
         if textProcessing.inArray(CompletedTasks,command):
             for i in range(0,len(file)):
@@ -18,15 +18,15 @@ def chatbotread(command):
             for i in range(0,len(file)):
                 if file[i]["Completed"] == "in progress":
                     ChatbotFile = ChatbotFile + "TaskId: " + file[i]["TaskID"] + " Task: " + file[i]["Task"] + " DateStart: " + file[i]["DateStart"] + " DateDue: " + file[i]["DateDue"] + " User: " +  file[i]["User"] + " Completed: " + file[i]["Completed"]+ " TaskDifficulty: " + file[i]["TaskDifficulty"] +"\n"
-        elif textProcessing.inArray(notCompleted,command):
+        else:
             for i in range(0,len(file)):
-                if file[i]["Completed"].lower() == "i":
+                if file[i]["Completed"].lower() == "":
                     ChatbotFile = ChatbotFile + "TaskId: " + file[i]["TaskID"] + " Task: " + file[i]["Task"] + " DateStart: " + file[i]["DateStart"] + " DateDue: " + file[i]["DateDue"] + " User: " +  file[i]["User"] + " Completed: " + file[i]["Completed"]+ " TaskDifficulty: " + file[i]["TaskDifficulty"] +"\n"
     return ChatbotFile
 
 def AssignTask(Username, command ):
     completed = ["complete", "completed", "done", "finished"]
-    inprogress = ["completing", "started", "starting", "initiating"]
+    inprogress = ["completing", "started", "starting", "initiating", "doing"]
     taskIDIndicator = ["task"]
     if textProcessing.inArray(taskIDIndicator, command):
         wordSplit = command.split()
@@ -45,11 +45,10 @@ def AssignTask(Username, command ):
 
     if TaskID != None:
         completedStatus = ""
-        if (textProcessing.inArray(completed, command)):
+        if (textProcessing.inArray(completed, command.lower())):
             completedStatus = "completed"
-        elif (textProcessing.inArray(inprogress, command)):
+        elif (textProcessing.inArray(inprogress, command.lower())):
             completedStatus = "in progress"
-
         todostorage.todoEdit(Username, completedStatus, TaskID)
 
 def TaskDifCheck(line): #checks if the task difficulty has been inputted correctly (made by Ben G)
@@ -92,8 +91,12 @@ def daysDelta(): #FUNCTION Created by Ben G
 
     pointsDelta = currentPoints - expectedPoints
     dayDelta = pointsDelta / pointsPDay
+    response = ""
+    if dayDelta < 0:
+        response = "You are " + str((dayDelta ** 2) ** 0.5) + " days behind"
+    else:
+        response = "You are " + str(dayDelta) + " days ahead"
 
-    return dayDelta
+    return response
 
-print(chatbotread("what"))
 

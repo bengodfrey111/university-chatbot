@@ -21,7 +21,7 @@ def todoEdit(User, Completed, TaskID):
             file[i]["User"] = User
             file[i]["Completed"] = Completed
 
-    todowrite(file)
+    toDoWrite(file)
 
 
 def ToDoSpecific (TaskID):
@@ -29,10 +29,7 @@ def ToDoSpecific (TaskID):
     for i in range (0,len(File)):
         if str(TaskID)==str(File[i]["TaskID"]):
             return i+1
-if __name__ == "__main__":
-    TaskID = input("what is taskID")
-    print(ToDoSpecific(TaskID))
-    
+
 def toDoWrite(file): #function created by Ben G
     finalArray = []
     finalArray.append(["","","Date Start", "Date Due"])
