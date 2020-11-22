@@ -1,4 +1,4 @@
-import todostorage, textProcessing, datetime
+import todostorage, reminderTextProcessing, datetime
 #File = todostorage.toDoRead()
 #print(File)
 def chatbotread(command):
@@ -8,13 +8,13 @@ def chatbotread(command):
     CompletedTasks = ["completed", "done"]
     notCompleted = [""]
     ChatbotFile = ""
-    if (textProcessing.inArray(chatbotkeys, command)):#Ben G FUNCTION
+    if (reminderTextProcessing.inArray(chatbotkeys, command)):#Ben G FUNCTION
         file = todostorage.toDoRead()
-        if textProcessing.inArray(CompletedTasks,command):
+        if reminderTextProcessing.inArray(CompletedTasks,command):
             for i in range(0,len(file)):
                 if file[i]["Completed"].lower() == "completed":
                     ChatbotFile = ChatbotFile + "TaskId: " + file[i]["TaskID"] + " Task: " + file[i]["Task"] + " DateStart: " + file[i]["DateStart"] + " DateDue: " + file[i]["DateDue"] + " User: " +  file[i]["User"] + " Completed: " + file[i]["Completed"]+ " TaskDifficulty: " + file[i]["TaskDifficulty"] +"\n"
-        elif textProcessing.inArray(inProgress,command):
+        elif reminderTextProcessing.inArray(inProgress,command):
             for i in range(0,len(file)):
                 if file[i]["Completed"] == "in progress":
                     ChatbotFile = ChatbotFile + "TaskId: " + file[i]["TaskID"] + " Task: " + file[i]["Task"] + " DateStart: " + file[i]["DateStart"] + " DateDue: " + file[i]["DateDue"] + " User: " +  file[i]["User"] + " Completed: " + file[i]["Completed"]+ " TaskDifficulty: " + file[i]["TaskDifficulty"] +"\n"
@@ -28,15 +28,15 @@ def AssignTask(Username, command ):
     completed = ["complete", "completed", "done", "finished"]
     inprogress = ["completing", "started", "starting", "initiating", "doing"]
     taskIDIndicator = ["task"]
-    if textProcessing.inArray(taskIDIndicator, command):
+    if reminderTextProcessing.inArray(taskIDIndicator, command):
         wordSplit = command.split()
         for i in range(0,len(wordSplit)):
-            if textProcessing.inArray(taskIDIndicator, wordSplit[i].lower()):
+            if reminderTextProcessing.inArray(taskIDIndicator, wordSplit[i].lower()):
                 if len(wordSplit) > i + 1:
-                    if textProcessing.isInt(wordSplit[i + 1]):
+                    if reminderTextProcessing.isInt(wordSplit[i + 1]):
                         TaskID =  wordSplit[i + 1]
                     elif len(wordSplit) > i + 2:
-                        if textProcessing.isInt(wordSplit[i + 2]):
+                        if reminderTextProcessing.isInt(wordSplit[i + 2]):
                             TaskID = wordSplit[i + 2]
                     else:
                         TaskID = None
@@ -45,16 +45,16 @@ def AssignTask(Username, command ):
 
     if TaskID != None:
         completedStatus = ""
-        if (textProcessing.inArray(completed, command.lower())):
+        if (reminderTextProcessing.inArray(completed, command.lower())):
             completedStatus = "completed"
-        elif (textProcessing.inArray(inprogress, command.lower())):
+        elif (reminderTextProcessing.inArray(inprogress, command.lower())):
             completedStatus = "in progress"
         todostorage.todoEdit(Username, completedStatus, TaskID)
 
 def TaskDifCheck(line): #checks if the task difficulty has been inputted correctly (made by Ben G)
-    if textProcessing.isInt(line["TaskDifficulty"]):
+    if reminderTextProcessing.isInt(line["TaskDifficulty"]):
         pass
-    elif not(textProcessing.isInt(line["TaskDifficulty"])) and line["TaskID"] != "":
+    elif not(reminderTextProcessing.isInt(line["TaskDifficulty"])) and line["TaskID"] != "":
         line["TaskDifficulty"] = 1
     else:
         line["TaskDifficulty"] = 0
@@ -64,8 +64,8 @@ def daysDelta(): #FUNCTION Created by Ben G
     file = todostorage.toDoRead()
     now = datetime.datetime.now()
     now = datetime.datetime(now.year, now.month, now.day) #gets rid of the time since taht won't be needed
-    startDay, startMonth, startYear = textProcessing.dateDetermineFromString(file[0]["DateStart"], ["/", "\\", "."])
-    endDay, endMonth, endYear = textProcessing.dateDetermineFromString(file[0]["DateDue"], ["/", "\\", "."])
+    startDay, startMonth, startYear = reminderTextProcessing.dateDetermineFromString(file[0]["DateStart"], ["/", "\\", "."])
+    endDay, endMonth, endYear = reminderTextProcessing.dateDetermineFromString(file[0]["DateDue"], ["/", "\\", "."])
     startDate = datetime.datetime(startYear, startMonth, startDay) #all dates for each task has the same times (note year has to be full 2020 not just 20)
     endDate = datetime.datetime(endYear, endMonth, endDay)
     elapsedDays = now - startDate

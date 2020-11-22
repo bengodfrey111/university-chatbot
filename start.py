@@ -1,4 +1,4 @@
-import textProcessing, ToDoTextProcessing, storage, datetime, threading, time #learnt threading in https://www.tutorialkart.com/python/python-multithreading/
+import reminderTextProcessing, ToDoTextProcessing, reminderStorage, datetime, threading, time #learnt threading in https://www.tutorialkart.com/python/python-multithreading/
 
 def isDateTimeLarger(dateTime, dateTime2): #since comparing the two datetimes with a simple if statement does not work that well
     if dateTime.year > dateTime2.year: #if datetime is larger than datetime2 then it returns True
@@ -30,13 +30,13 @@ def isDateTimeLarger(dateTime, dateTime2): #since comparing the two datetimes wi
 def reminderChecker(): #this will check if a reminder would need to be displayed
     while True:
         now = datetime.datetime.now()
-        reminderObjList = storage.readReminder()
+        reminderObjList = reminderStorage.readReminder()
         timedOutLoc = [] #location of the reminders that must be displayed (may or may not be in use)
         for i in range(0,len(reminderObjList)):
             if isDateTimeLarger(now, reminderObjList[i].dateTime):
                 print("\n" + reminderObjList[i].user + ": " + reminderObjList[i].reminder)
                 timedOutLoc.append(i)
-                storage.deleteReminder(reminderObjList, i)
+                reminderStorage.deleteReminder(reminderObjList, i)
         time.sleep(5) #this delays the code by some seconds so that it won't consume a siginificant amount of cpu power
 
 
@@ -53,12 +53,12 @@ def mChatbot(command, user):
     assignTaskInProgress = ["completing", "started", "starting", "initiating", "doing"]
     assignTaskDropped = ["dropped", "stopped"]
     if "remind me" in lCommand or "set remind" in lCommand:
-        response = textProcessing.setReminder(command, user)
+        response = reminderTextProcessing.setReminder(command, user)
     elif ("what" in lCommand and "reminder" in lCommand):
-        response = textProcessing.sayReminders(user)
+        response = reminderTextProcessing.sayReminders(user)
     elif ("what" in lCommand and "task" in lCommand) or ("list" in lCommand and "task" in lCommand):
         response = ToDoTextProcessing.chatbotread(command)
-    elif (textProcessing.inArray(assignTaskCompleted, lCommand) or textProcessing.inArray(assignTaskInProgress, lCommand) or textProcessing.inArray(assignTaskDropped, lCommand)) and "task" in lCommand and textProcessing.inArray(["1","2","3","4","5","6","7","8","9"],command): #checks if a number is in command
+    elif (reminderTextProcessing.inArray(assignTaskCompleted, lCommand) or reminderTextProcessing.inArray(assignTaskInProgress, lCommand) or reminderTextProcessing.inArray(assignTaskDropped, lCommand)) and "task" in lCommand and reminderTextProcessing.inArray(["1","2","3","4","5","6","7","8","9"],command): #checks if a number is in command
         ToDoTextProcessing.AssignTask(user, command )
     elif "on track" in lCommand and "is" in lCommand and "project" in lCommand:
         response = ToDoTextProcessing.daysDelta()

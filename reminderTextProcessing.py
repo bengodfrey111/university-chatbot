@@ -1,4 +1,4 @@
-import storage
+import reminderStorage
 import datetime
 import calendar #https://stackoverflow.com/questions/9481136/how-to-find-number-of-days-in-the-current-month
 import time
@@ -373,17 +373,17 @@ def setReminder(command, user, write = True):
         reminderSection["end"] = reminderSection["end"] - 1
         reminder = reminderStatement(words, reminderSection)
 
-    obj = storage.reminder(user, str(dateTime), reminder) #needed to make datetime a string since I wasn't using milliseconds and so doing it this way makes it easier to add that in
+    obj = reminderStorage.reminder(user, str(dateTime), reminder)
 
     if write == True:
-        storage.appendReminder(obj)
+        reminderStorage.appendReminder(obj)
 
     return "reminder " + str(obj.reminder) + " for " + str(obj.dateTime)
 
 
 #
 def sayReminders(user): #will list all the reminders that the user has if the user asks for it
-    reminderObjList = storage.userReminderList(user)
+    reminderObjList = reminderStorage.userReminderList(user)
     if len(reminderObjList) > 0:
         string = str(reminderObjList[0].dateTime) + " " + reminderObjList[0].reminder
         for i in range(0,len(reminderObjList)):
