@@ -91,6 +91,7 @@ def daysDelta(): #FUNCTION Created by Ben G
 
     pointsDelta = currentPoints - expectedPoints
     dayDelta = pointsDelta / pointsPDay
+    dayDelta = round(dayDelta,1)
     response = ""
     if dayDelta < 0:
         response = "You are " + str((dayDelta ** 2) ** 0.5) + " days behind"
