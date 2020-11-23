@@ -1,6 +1,6 @@
 import reminderStorage
 import datetime
-import calendar #https://stackoverflow.com/questions/9481136/how-to-find-number-of-days-in-the-current-month
+import calendar
 import time
 
 def isInt(variable): #determines if an inputted variable can be a string
@@ -16,7 +16,7 @@ def monthsToYears(monthsAdd):
     return months, years
 
 def daysToMonth(daysAdd, time, nowTime): #this is if the number of days exceed the amount of days in the month
-    currentDaysInMonth = calendar.monthrange(time.year, time.month)[1]
+    currentDaysInMonth = calendar.monthrange(time.year, time.month)[1] #https://stackoverflow.com/questions/9481136/how-to-find-number-of-days-in-the-current-month
     months = 0
     days = daysAdd
     while True:

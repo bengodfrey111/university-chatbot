@@ -4,8 +4,8 @@ import datetime
 class reminder:
     def __init__(self, user, dateTime, reminder): #constructor of all the variables in this object
         self.user = user
-        self.dateTime = datetime.datetime.strptime(dateTime, '%Y-%m-%d %H:%M:%S') #will make the datetime string into a datetime struct (make it easier to get different elements of the date and time)
-        self.reminder = reminder #learnt about datetime from stack overflow (https://stackoverflow.com/questions/415511/how-to-get-the-current-time-in-python)
+        self.dateTime = datetime.datetime.strptime(dateTime, '%Y-%m-%d %H:%M:%S') #will make the datetime string into a datetime struct (make it easier to get different elements of the date and time), learnt about datetime from stack overflow (https://stackoverflow.com/questions/415511/how-to-get-the-current-time-in-python) and to convert it from string to struct at https://stackabuse.com/converting-strings-to-datetime-in-python/
+        self.reminder = reminder
 
 def readReminder():
     file = open("reminders.csv","r")
