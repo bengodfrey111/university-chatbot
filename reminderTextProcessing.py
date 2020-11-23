@@ -184,7 +184,7 @@ def removeLetters(string): #removes letters from a string
     string = puncRemove(string)
     letters = "abcdefghijklomnpqrstuvwxyz"
     for i in range(0,len(letters)):
-        if letters[i] in string:
+        if letters[i] in string.lower():
             string = string.replace(letters[i],"")
     return string
 
@@ -218,8 +218,8 @@ def specificTimeDecipher(numberLoc, words, specificTimeLoc, timeSection): #will 
                 time["month"] = month
                 if len(words[numberLoc[i]]) == 4:
                     time["year"] = int(words[numberLoc[i]])
-                elif len(words[numberLoc[i]]) == 2 or len(words[numberLoc[i]]) == 1:
-                    time["day"] = int(words[numberLoc[i]])
+                elif len(removeLetters(words[numberLoc[i]])) == 2 or len(removeLetters(words[numberLoc[i]])) == 1:
+                    time["day"] = int(removeLetters(words[numberLoc[i]]))
                 break
 
         dateLoc = []
