@@ -68,6 +68,8 @@ def puncRemove(string):
     string = string.replace(".","")
     string = string.replace(",","")
     string = string.replace("?","")
+    string = string.replace(":","")
+    string = string.replace("/","")
     return string
 
 def addTimeDecipher(numberLoc, words, addTimeLoc): #this will try to get the datetime from the statement if it can from the view that it is saying something like in 3 hours
@@ -175,7 +177,7 @@ def dateDetermineFromString(date, dateDetermine): #will try and determine the da
 
 def puncYear(word): #this is to determine if there is punctuation in the middle of the number (2020. is very different to 20.20)
     split = word.split()
-    punc = [".", ","]
+    punc = [".", ",","/","\\"]
     for i in range(1,len(split) - 1):
         if inArray(punc, split[i]):
             return False
@@ -275,10 +277,13 @@ def arrayToString(array): #makes an array of characters into a string of charact
     return string
 
 def reminderStatement(words, reminderSection): #this will put the reminder together as a string
-    string = str(words[reminderSection["start"]])
-    for i in range(reminderSection["start"] + 1, reminderSection["end"]):
-        string = string + " " + words[i]
-    return string
+    if reminderSection["start"] != None:
+        string = str(words[reminderSection["start"]])
+        for i in range(reminderSection["start"] + 1, reminderSection["end"]):
+            string = string + " " + words[i]
+        return string
+    else:
+        return ""
 
 def specificTimeClean(specTime, addTime): #this is to make the specific time make sense, for example if you want a reminder at 3 am and its currently at 5pm you want 3 am the next day not the same day
     now = datetime.datetime.now()
@@ -370,9 +375,10 @@ def setReminder(command, user, write = True):
     timeSentence = reminderStatement(words, timeSection) #just to check where the program thinks the time is
     dateTime = dictToDateTime(time) #converting the dictionary to a datetime struct because it would automatically send out an error if there is an illegal date or time (example month 0 cannot exist and minute 67 can't exits)
     reminderSplit = reminder.split() #just to get rid of an unneccsary word that sometime comes up at the end
-    if inArray(TimeIndicator, reminderSplit[len(reminderSplit) - 1]):
-        reminderSection["end"] = reminderSection["end"] - 1
-        reminder = reminderStatement(words, reminderSection)
+    if len(reminderSplit) != 0:
+        if inArray(TimeIndicator, reminderSplit[len(reminderSplit) - 1]):
+            reminderSection["end"] = reminderSection["end"] - 1
+            reminder = reminderStatement(words, reminderSection)
 
     obj = reminderStorage.reminder(user, str(dateTime), reminder)
 

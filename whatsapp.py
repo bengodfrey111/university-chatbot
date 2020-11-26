@@ -6,6 +6,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.expected_conditions import presence_of_element_located
 import time
 import start
+import reminderTextProcessing
   
 
 def readWhatsApp(driver):
@@ -48,17 +49,28 @@ time.sleep(1)
 
 messages = readWhatsApp(driver)
 sent = []
+username = ""
+for i in range(0,len(messages)): #trying to find who was the latest user to speak
+    noPunc = reminderTextProcessing.puncRemove(messages[i])
+    if reminderTextProcessing.isInt(noPunc) and (len(noPunc) == 3 or len(noPunc) == 4):
+        if len(messages) > i + 2:
+            noPunc2 = reminderTextProcessing.puncRemove(messages[i + 2])
+            if not(reminderTextProcessing.isInt(noPunc2) and (len(noPunc2) == 3 or len(noPunc2) == 4)):
+                username = messages[i + 1]
 while True:
     time.sleep(1)
     lastTime = len(messages) - 1
     messages = readWhatsApp(driver)
-    for i in range(lastTime,len(messages), 2):
+    if len(messages) - lastTime == 4: #trying to update the latest user to speak
+        username = messages[lastTime + 2]
+        print(username)
+    for i in range(lastTime,len(messages)):
         print(messages[i])
-        response = start.mChatbot(messages[i],"Ben")
+        print(username)
+        response = start.mChatbot(messages[i],username)
         if response != "":
             print(response)
             send(driver, response)
-            print(i)
     response = ""
     time.sleep(0.2)
     response = start.reminderChecker()
