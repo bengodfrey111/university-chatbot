@@ -28,17 +28,25 @@ def isDateTimeLarger(dateTime, dateTime2): #since comparing the two datetimes wi
 
 
 def reminderChecker(): #this will check if a reminder would need to be displayed
-    while True:
-        now = datetime.datetime.now()
-        reminderObjList = reminderStorage.readReminder()
-        timedOutLoc = [] #location of the reminders that must be displayed (may or may not be in use)
-        for i in range(0,len(reminderObjList)):
-            if isDateTimeLarger(now, reminderObjList[i].dateTime):
-                print("\n" + reminderObjList[i].user + ": " + reminderObjList[i].reminder)
-                timedOutLoc.append(i)
-                reminderStorage.deleteReminder(reminderObjList, i)
-        time.sleep(5) #this delays the code by some seconds so that it won't consume a siginificant amount of cpu power
+    now = datetime.datetime.now()
+    reminderObjList = reminderStorage.readReminder()
+    timedOutLoc = [] #location of the reminders that must be displayed (may or may not be in use)
+    string = ""
+    for i in range(0,len(reminderObjList)):
+        if isDateTimeLarger(now, reminderObjList[i].dateTime):
+            string = string + ("\n" + reminderObjList[i].user + ": " + reminderObjList[i].reminder)
+            timedOutLoc.append(i)
 
+    for i in range(0,len(timedOutLoc)):        
+        reminderStorage.deleteReminder(reminderObjList, timedOutLoc[i])
+    return string
+
+def reminderCheckerAsync():
+    while True:
+        time.sleep(1)
+        reminder = reminderChecker()
+        if reminder != "":
+            print(reminder)
 
 def inputTest():
     while True:
@@ -67,7 +75,7 @@ def mChatbot(command, user):
     return response
 
 if __name__ == "__main__":
-    remindCheck = threading.Thread(target=reminderChecker, name="remindCheck") #starts the thread of the reminder checker (depends on how far we get it may or may not be useful)
+    remindCheck = threading.Thread(target=reminderCheckerAsync, name="remindCheck") #starts the thread of the reminder checker (depends on how far we get it may or may not be useful)
     remindCheck.start()
     time.sleep(0.1)
     textCommand = threading.Thread(target=inputTest, name="textCommand") #the user name is just there till we find a better solution

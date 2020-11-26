@@ -23,12 +23,15 @@ def weather(command):
     city = detPlace(command)
     string = ""
     if city != None:
-        loc = owm.weather_manager().weather_at_place(city)
-        weather = loc.weather
+        try:
+            loc = owm.weather_manager().weather_at_place(reminderTextProcessing.puncRemove(city.lower()))
+            weather = loc.weather
 
-        # temperature
-        temp = weather.temperature(unit='celsius')
+            # temperature
+            temp = weather.temperature(unit='celsius')
 
-        for key, val in temp.items():
-            string = string + "\n" + (f'{key} => {val}')
+            for key, val in temp.items():
+                string = string + "\n" + (f'{key} => {val}')
+        except:
+            pass
     return string

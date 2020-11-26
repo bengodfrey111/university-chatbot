@@ -67,6 +67,7 @@ def timeAddition(timeChange, now = datetime.datetime.now(), nowTime = True):
 def puncRemove(string):
     string = string.replace(".","")
     string = string.replace(",","")
+    string = string.replace("?","")
     return string
 
 def addTimeDecipher(numberLoc, words, addTimeLoc): #this will try to get the datetime from the statement if it can from the view that it is saying something like in 3 hours

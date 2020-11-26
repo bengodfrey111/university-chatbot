@@ -51,6 +51,8 @@ def AssignTask(Username, command ):
             completedStatus = "in progress"
         todostorage.todoEdit(Username, completedStatus, TaskID)
 
+    
+
 def TaskDifCheck(line): #checks if the task difficulty has been inputted correctly (made by Ben G)
     if reminderTextProcessing.isInt(line["TaskDifficulty"]):
         pass
