@@ -34,4 +34,5 @@ def weather(command):
                 string = string + "\n" + (f'{key} => {val}')
         except:
             return "Invalid location"
-    return "You need to type in a location"
+    else:
+        return "You need to type in a location"
