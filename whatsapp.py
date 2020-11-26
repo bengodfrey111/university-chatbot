@@ -28,6 +28,18 @@ def send(driver, writing):
 
     write.send_keys(writing + Keys.ENTER) 
 
+def userDet(messages): #this tries to determine who is currently speaking
+    sent = []
+    username = ""
+    for i in range(0,len(messages)): #trying to find who was the latest user to speak
+        noPunc = reminderTextProcessing.puncRemove(messages[i])
+        if reminderTextProcessing.isInt(noPunc) and (len(noPunc) == 3 or len(noPunc) == 4):
+            if len(messages) > i + 2:
+                noPunc2 = reminderTextProcessing.puncRemove(messages[i + 2])
+                if not(reminderTextProcessing.isInt(noPunc2) and (len(noPunc2) == 3 or len(noPunc2) == 4)):
+                    username = messages[i + 1]
+    return username
+
 # Replace below path with the absolute path 
 # to chromedriver in your computer 
 target = '"' + input("type the name of a person or group you want the chatbot to be operating in:") + '"'
@@ -48,22 +60,13 @@ send(driver, string)
 time.sleep(1)
 
 messages = readWhatsApp(driver)
-sent = []
-username = ""
-for i in range(0,len(messages)): #trying to find who was the latest user to speak
-    noPunc = reminderTextProcessing.puncRemove(messages[i])
-    if reminderTextProcessing.isInt(noPunc) and (len(noPunc) == 3 or len(noPunc) == 4):
-        if len(messages) > i + 2:
-            noPunc2 = reminderTextProcessing.puncRemove(messages[i + 2])
-            if not(reminderTextProcessing.isInt(noPunc2) and (len(noPunc2) == 3 or len(noPunc2) == 4)):
-                username = messages[i + 1]
+username = userDet(messages)
+
 while True:
     time.sleep(1)
     lastTime = len(messages) - 1
     messages = readWhatsApp(driver)
-    if len(messages) - lastTime == 4: #trying to update the latest user to speak
-        username = messages[lastTime + 2]
-        print(username)
+    username = userDet(messages)
     for i in range(lastTime,len(messages)):
         print(messages[i])
         print(username)
