@@ -71,11 +71,11 @@ while True:
         print(messages[i])
         print(username)
         response = start.mChatbot(messages[i],username)
-        if response != "":
+        if response != "" and response != None:
             print(response)
             send(driver, response)
     response = ""
-    time.sleep(0.2)
+    time.sleep(1)
     response = start.reminderChecker()
     if response != "":
         print(response)

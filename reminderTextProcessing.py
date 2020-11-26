@@ -75,7 +75,7 @@ def puncRemove(string):
 def addTimeDecipher(numberLoc, words, addTimeLoc): #this will try to get the datetime from the statement if it can from the view that it is saying something like in 3 hours
     addTime = {"minute" : 0, "hour" : 0, "day" : 0, "month" : 0, "year" : 0} #these variables are there in case the user wants a reminder later in a set period of time (example is set reminder in 2 days)
     noPunc = puncRemove(arrayToString(words)).lower()
-    if "tommorow" in noPunc: #finding common ways of saying a period of time in the future without writing a number
+    if "tommorow" in noPunc or "tomorrow" in noPunc: #finding common ways of saying a period of time in the future without writing a number
         addTime["day"] = addTime["day"] + 1
     if "in a day" in noPunc:
         addTime["day"] = addTime["day"] + 1

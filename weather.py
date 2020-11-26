@@ -32,7 +32,8 @@ def weather(command):
 
             for key, val in temp.items():
                 string = string + "\n" + (f'{key} => {val}')
+            return string
         except:
             return "Invalid location"
-    else:
-        return "You need to type in a location"
+
+    return "You need to type in a location"
