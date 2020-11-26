@@ -1,4 +1,4 @@
-import reminderTextProcessing, ToDoTextProcessing, reminderStorage, datetime, threading, time #learnt threading in https://www.tutorialkart.com/python/python-multithreading/
+import reminderTextProcessing, ToDoTextProcessing, reminderStorage, datetime, threading, time, weather #learnt threading in https://www.tutorialkart.com/python/python-multithreading/
 
 def isDateTimeLarger(dateTime, dateTime2): #since comparing the two datetimes with a simple if statement does not work that well
     if dateTime.year > dateTime2.year: #if datetime is larger than datetime2 then it returns True
@@ -63,7 +63,7 @@ def mChatbot(command, user):
     elif "on track" in lCommand and "is" in lCommand and "project" in lCommand:
         response = ToDoTextProcessing.daysDelta()
     elif "weather" in lCommand:
-        pass
+        response = weather.weather(command)
     return response
 
 if __name__ == "__main__":
