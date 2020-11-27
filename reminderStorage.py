@@ -8,13 +8,16 @@ class reminder:
         self.reminder = reminder
 
 def readReminder():
-    file = open("reminders.csv","r")
-    csvRead = csv.reader(file,delimiter=",")
     objList = []
-    for line in csvRead:
-        if line != None and line != "":
-            objList.append(reminder(line[0],line[1],line[2]))    #creating the object based on whats contained in the csv file
-    file.close()
+    try: #if no file then create file (what try and except is used)
+        file = open("reminders.csv","r")
+        csvRead = csv.reader(file,delimiter=",")
+        for line in csvRead:
+            if line != None and line != "":
+                objList.append(reminder(line[0],line[1],line[2]))    #creating the object based on whats contained in the csv file
+        file.close()
+    except FileNotFoundError:
+        open("reminders.csv","w",newline="")
     return objList
 
 def appendReminder(toWrite): #this will write all the reminders to the reminders file

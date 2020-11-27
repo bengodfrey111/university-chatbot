@@ -42,7 +42,7 @@ def userDet(messages): #this tries to determine who is currently speaking
 
 # Replace below path with the absolute path 
 # to chromedriver in your computer 
-target = '"' + input("type the name of a person or group you want the chatbot to be operating in:") + '"'
+target = '"' + input("Which group chat do you want the chatbot to operate in?") + '"'
 driver = webdriver.Chrome('chromedriver.exe') #https://www.youtube.com/watch?v=u3CJFt8xWNo
   
 driver.get("https://web.whatsapp.com/") 
@@ -70,13 +70,19 @@ while True: #checking if someone wrote something every couple of seconds
     for i in range(lastTime,len(messages)):
         print(messages[i])
         print(username)
-        response = start.mChatbot(messages[i],username)
+        try: #if there is an error because someone typed something wrongly or it mistook a command then it does nothing instead of crashing
+            response = start.mChatbot(messages[i],username)
+        except:
+            pass
         if response != "" and response != None:
             print(response)
             send(driver, response)
     response = ""
     time.sleep(1)
-    response = start.reminderChecker()
+    try:
+        response = start.reminderChecker()
+    except:
+        pass
     if response != "":
         print(response)
         send(driver, response)
