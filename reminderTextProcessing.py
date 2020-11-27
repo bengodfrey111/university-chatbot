@@ -243,9 +243,15 @@ def specificTimeDecipher(numberLoc, words, specificTimeLoc, timeSection): #will 
             if isInt(removeLetters(words[i])): #this checks to see if a specific hour has been inputted
                 if int(removeLetters(words[i])) <= 12:
                     if "am" in words[i].lower():
-                        time["hour"] = int(removeLetters(words[i]))
+                        if int(removeLetters(words[i])) == 12:
+                            time["hour"] = 0
+                        else:
+                            time["hour"] = int(removeLetters(words[i]))
                     elif "pm" in words[i].lower():
-                        time["hour"] = int(removeLetters(words[i])) + 12
+                        if int(removeLetters(words[i])) == 12:
+                            time["hour"] = 12
+                        else:
+                            time["hour"] = int(removeLetters(words[i])) + 12
                     if i + 1 < len(words):
                         if words[i + 1].lower() == "am":
                             if int(removeLetters(words[i]) == 12):
