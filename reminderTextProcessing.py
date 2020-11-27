@@ -318,7 +318,10 @@ def reminderStatement(words, reminderSection): #this will put the reminder toget
 def specificTimeClean(specTime, addTime): #this is to make the specific time make sense, for example if you want a reminder at 3 am and its currently at 5pm you want 3 am the next day not the same day
     now = datetime.datetime.now()
     if specTime["hour"] != 0 and addTime["day"] == 0 and specTime["day"] == 0 and None != specTime["hour"]:
-        if specTime["minute"] <= now.minute and now.hour > specTime["hour"]:
+        if specTime["minute"] != None:
+            if now.hour > specTime["hour"]:
+                addTime["day"] = addTime["day"] + 1
+        elif now.hour >= specTime["hour"]:
             addTime["day"] = addTime["day"] + 1
     if specTime["month"] != 0 and addTime["year"] == 0 and specTime["year"] == 0 and now.month > specTime["month"]:
         addTime["year"] = addTime["year"] + 1
