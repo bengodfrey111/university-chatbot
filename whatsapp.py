@@ -9,7 +9,7 @@ import start
 import reminderTextProcessing
   
 
-def readWhatsApp(driver):# inefficient but works, may change if I have time
+def readWhatsApp(driver):# inefficient but works, its also not as inefficient since whatsapp has a tendicy of unloading old messages
     results = driver.find_element_by_class_name("tSmQ1")
     messages = []
     strMessageSplit = list(results.text) #https://www.youtube.com/watch?v=b5jt2bhSeXs
