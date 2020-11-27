@@ -13,7 +13,7 @@ def isDateTimeLarger(dateTime, dateTime2): #since comparing the two datetimes wi
                 if dateTime.hour > dateTime2.hour:
                     return True
                 elif dateTime.hour == dateTime2.hour:
-                    if dateTime.minute >= dateTime2.minute:
+                    if dateTime.minute > dateTime2.minute:
                         return True
                     else:
                         return False
