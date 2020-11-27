@@ -60,7 +60,7 @@ def mChatbot(command, user):
     assignTaskCompleted = ["complete", "completed", "done", "finished"]
     assignTaskInProgress = ["completing", "started", "starting", "initiating", "doing"]
     assignTaskDropped = ["dropped", "stopped"]
-    if "remind me" in lCommand or "set remind" in lCommand:
+    if "remind me" in lCommand or ("set" in lCommand and "remind" in lCommand):
         response = reminderTextProcessing.setReminder(command, user)
     elif ("what" in lCommand and "reminder" in lCommand):
         response = reminderTextProcessing.sayReminders(user)

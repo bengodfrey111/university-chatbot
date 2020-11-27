@@ -381,7 +381,7 @@ def setReminder(command, user, write = True):
     now = datetime.datetime.now() #need to do this since you can't have 0 year and 0 month
     futurePlusCurrent = futureTime
     if futurePlusCurrent["minute"] == None: #this will construct a specific time that makes sense (saying febuary will bring 00:00 1 feb) and also won't have something such as month 0 occuring
-        if CheckUnspoken(futurePlusCurrent, "minute"):
+        if CheckUnspoken(futurePlusCurrent, "minute") and addTimeAddition["minute"] == 0:
             futurePlusCurrent["minute"] = 0
         else:
             futurePlusCurrent["minute"] = now.minute
