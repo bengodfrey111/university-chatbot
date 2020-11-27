@@ -198,15 +198,21 @@ def removeLetters(string): #removes letters from a string
     return string
 
 def makeTimeInt(timeDict): #this is to make all the variables in the time dictionaries an integer since they occasiaonaly don't come out as such
-    timeDict["minute"] = int(timeDict["minute"])
-    timeDict["hour"] = int(timeDict["hour"])
+    try:
+        timeDict["minute"] = int(timeDict["minute"])
+    except:
+        pass
+    try:
+        timeDict["hour"] = int(timeDict["hour"])
+    except:
+        pass
     timeDict["day"] = int(timeDict["day"])
     timeDict["month"] = int(timeDict["month"])
     timeDict["year"] = int(timeDict["year"])
     return timeDict
 
 def specificTimeDecipher(numberLoc, words, specificTimeLoc, timeSection): #will try to determine a specific time that was inputted (example is 1st of jan 2021 will be determined as year = 2021, month = 1, day = 1)
-    time = {"minute" : 0, "hour" : 0, "day" : 0, "month" : 0, "year" : 0}
+    time = {"minute" : None, "hour" : None, "day" : 0, "month" : 0, "year" : 0}
     months = ["jan", "feb", "march", "april", "may", "june", "july", "aug", "sep", "oct", "nov", "dec"]
     monthAsNumber = []
     timeDetermine = [":"] #this is the punctuation that will determine if the time was said (example is 3:30 meaning hour = 3, minute = 30)
@@ -365,12 +371,12 @@ def setReminder(command, user, write = True):
     addTimeAddition = specificTimeClean(futureTime, addTimeAddition)
     now = datetime.datetime.now() #need to do this since you can't have 0 year and 0 month
     futurePlusCurrent = futureTime
-    if futurePlusCurrent["minute"] == 0: #this will construct a specific time that makes sense (saying febuary will bring 00:00 1 feb) and also won't have something such as month 0 occuring
+    if futurePlusCurrent["minute"] == None: #this will construct a specific time that makes sense (saying febuary will bring 00:00 1 feb) and also won't have something such as month 0 occuring
         if CheckUnspoken(futurePlusCurrent, "minute"):
             futurePlusCurrent["minute"] = 0
         else:
             futurePlusCurrent["minute"] = now.minute
-    if futurePlusCurrent["hour"] == 0:
+    if futurePlusCurrent["hour"] == None:
         if CheckUnspoken(futurePlusCurrent, "hour"):
             futurePlusCurrent["hour"] = 0
         else:

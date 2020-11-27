@@ -12,7 +12,7 @@ import reminderTextProcessing
 def readWhatsApp(driver):# inefficient but works, may change if I have time
     results = driver.find_element_by_class_name("tSmQ1")
     messages = []
-    strMessageSplit = list(results.text)
+    strMessageSplit = list(results.text) #https://www.youtube.com/watch?v=b5jt2bhSeXs
     string = ""
     for i in range(0,len(strMessageSplit)):
         if strMessageSplit[i] == "\n":
