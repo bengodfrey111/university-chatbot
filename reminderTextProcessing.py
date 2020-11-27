@@ -138,8 +138,14 @@ def timeDetermineFromString(time, timeDetermine, next = None): #will try and det
                         hour = int(wordSplit[i - 2] + hour)
                     if not(int(hour) > 12):
                         if (next != None and next.lower() == "pm") or "pm" in time:
-                            hour = int(hour) + 12
+                            if int(hour) == 12:
+                                hour = 12
+                            else:
+                                hour = int(hour) + 12
                             if hour > 23:
+                                hour = 0
+                        elif (next != None and next.lower() == "am") or "am" in time:
+                            if int(hour) == 12:
                                 hour = 0
                 if isInt(wordSplit[i + 1]) and isInt(wordSplit[i + 2]): #determines the minutes of the time
                     minute = int(wordSplit[i + 1] + wordSplit[i + 2])
@@ -177,7 +183,7 @@ def dateDetermineFromString(date, dateDetermine): #will try and determine the da
 
 def puncYear(word): #this is to determine if there is punctuation in the middle of the number (2020. is very different to 20.20)
     split = word.split()
-    punc = [".", ",","/","\\"]
+    punc = [".", ",","/","\\",":"]
     for i in range(1,len(split) - 1):
         if inArray(punc, split[i]):
             return False
@@ -242,9 +248,15 @@ def specificTimeDecipher(numberLoc, words, specificTimeLoc, timeSection): #will 
                         time["hour"] = int(removeLetters(words[i])) + 12
                     if i + 1 < len(words):
                         if words[i + 1].lower() == "am":
-                            time["hour"] = int(removeLetters(words[i]))
+                            if int(removeLetters(words[i]) == 12):
+                                time["hour"] = 0
+                            else:
+                                time["hour"] = int(removeLetters(words[i]))
                         elif words[i + 1].lower() == "pm":
-                            time["hour"] = int(removeLetters(words[i])) + 12
+                            if int(removeLetters(words[i]) == 12):
+                                time["hour"] = 12
+                            else:
+                                time["hour"] = int(removeLetters(words[i])) + 12
 
             if inArray(months, words[i]):
                 for j in range(0,len(months)):
