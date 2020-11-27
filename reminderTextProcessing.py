@@ -311,8 +311,8 @@ def reminderStatement(words, reminderSection): #this will put the reminder toget
 
 def specificTimeClean(specTime, addTime): #this is to make the specific time make sense, for example if you want a reminder at 3 am and its currently at 5pm you want 3 am the next day not the same day
     now = datetime.datetime.now()
-    if specTime["hour"] != 0 and addTime["day"] == 0 and specTime["day"] == 0 and now.hour > specTime["hour"]:
-        if specTime["minute"] <= now.minute:
+    if specTime["hour"] != 0 and addTime["day"] == 0 and specTime["day"] == 0 and None != specTime["hour"]:
+        if specTime["minute"] <= now.minute and now.hour > specTime["hour"]:
             addTime["day"] = addTime["day"] + 1
     if specTime["month"] != 0 and addTime["year"] == 0 and specTime["year"] == 0 and now.month > specTime["month"]:
         addTime["year"] = addTime["year"] + 1
@@ -337,7 +337,7 @@ def setReminder(command, user, write = True):
     numberLoc = []
     time = {"minute" : 0, "hour" : 0, "day" : 0, "month" : 0, "year" : 0}
     reminderStatementIndicator = ["that", "to"] #specific words that will indicate that the user will actually say their reminder (example: user may say remind me at ... to <insert reminder>)
-    TimeIndicator = ["at","in","for"]
+    TimeIndicator = ["at","in","for","on"]
     startStateLoc = None #this is where the first word of the actual reminder starts
     TimeLoc = None
     for i in range(0,len(words)):
@@ -424,17 +424,10 @@ def sayReminders(user): #will list all the reminders that the user has if the us
         return "you haven't got any reminders"
 
 
-def testing(): #this just test a variety of inputs
-    commands = []
-    outputs = []
-    commands.append("set reminder at 3:30am tommorow to fall asleep")
-    outputs.append("reminder to fall asleep for 2020-11-10 03:30:00")
-    for i in range(0,len(commands)):
-        assert setReminder(commands[i],"Ben",False) == outputs[i]
 
 
 if __name__ == "__main__": #this is just the test of the code, won't be main running file
-    response = setReminder("set reminder for 3:54pm March 2033 to stay awake", "Ben", False)
+    response = setReminder(input("Type in you reminder"), "Ben", False)
     print(response)
     #testing()
     #print(demandReminders("Ben13"))
