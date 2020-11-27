@@ -17,17 +17,21 @@ def monthsToYears(monthsAdd):
 
 def daysToMonth(daysAdd, time, nowTime): #this is if the number of days exceed the amount of days in the month
     currentDaysInMonth = calendar.monthrange(time.year, time.month)[1] #https://stackoverflow.com/questions/9481136/how-to-find-number-of-days-in-the-current-month
-    months = 0
+    months = time.month
     days = daysAdd
     while True:
-        months = int(days / currentDaysInMonth)
-        days = days % currentDaysInMonth
+        if days > currentDaysInMonth:
+            months = months + 1
+            difference = days - currentDaysInMonth
+            days = difference
+        else:
+            days = days % (currentDaysInMonth + 1)
         months, years = monthsToYears(months)
         monthSec, years = monthsToYears(months + time.month)
         if monthSec == 0:
             monthSec = 12
         currentDaysInMonth = calendar.monthrange(time.year + years, monthSec)[1]
-        if days < currentDaysInMonth:
+        if days <= currentDaysInMonth:
             break
     
     return days, months
@@ -57,11 +61,13 @@ def timeAddition(timeChange, now = datetime.datetime.now(), nowTime = True):
     days, months = daysToMonth(timeChange["day"] + now.day, now, nowTime)
     timeChange["day"] = days
     timeChange["month"] = timeChange["month"] + months
-    months, years = monthsToYears(timeChange["month"] + now.month)
+    months, years = monthsToYears(timeChange["month"])
     timeChange["month"] = months
     timeChange["year"] = timeChange["year"] + years + now.year
     if timeChange["month"] == 0:
         timeChange["month"] = 12
+    if timeChange["day"] == 0:
+        timeChange["day"] = calendar.monthrange(timeChange["year"], timeChange["month"])[1]
     return timeChange
 
 def puncRemove(string):
