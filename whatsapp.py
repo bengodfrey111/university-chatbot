@@ -62,7 +62,7 @@ time.sleep(1)
 messages = readWhatsApp(driver)
 username = userDet(messages)
 
-while True:
+while True: #checking if someone wrote something every couple of seconds
     time.sleep(1)
     lastTime = len(messages) - 1
     messages = readWhatsApp(driver)
