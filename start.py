@@ -74,7 +74,7 @@ def mChatbot(command, user):
         response = weather.weather(command)
     return response
 
-if __name__ == "__main__":
+if __name__ == "__main__": #this is just for testing purposes
     remindCheck = threading.Thread(target=reminderCheckerAsync, name="remindCheck") #starts the thread of the reminder checker (depends on how far we get it may or may not be useful)
     remindCheck.start()
     time.sleep(0.1)
