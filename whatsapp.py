@@ -8,6 +8,13 @@ import time
 import start
 import reminderTextProcessing
   
+def puncTimeRemove(string):
+    string = string.replace(".","")
+    string = string.replace(",","")
+    string = string.replace("?","")
+    string = string.replace(":","")
+    string = string.replace("/","")
+    return string
 
 def readWhatsApp(driver):# inefficient but works, its also not as inefficient since whatsapp has a tendicy of unloading old messages
     results = driver.find_element_by_class_name("tSmQ1")
@@ -32,10 +39,10 @@ def userDet(messages): #this tries to determine who is currently speaking
     sent = []
     username = ""
     for i in range(0,len(messages)): #trying to find who was the latest user to speak
-        noPunc = reminderTextProcessing.puncRemove(messages[i])
+        noPunc = puncTimeRemove(messages[i])
         if reminderTextProcessing.isInt(noPunc) and (len(noPunc) == 3 or len(noPunc) == 4):
             if len(messages) > i + 2:
-                noPunc2 = reminderTextProcessing.puncRemove(messages[i + 2])
+                noPunc2 = puncTimeRemove(messages[i + 2])
                 if not(reminderTextProcessing.isInt(noPunc2) and (len(noPunc2) == 3 or len(noPunc2) == 4)):
                     username = messages[i + 1]
     return username

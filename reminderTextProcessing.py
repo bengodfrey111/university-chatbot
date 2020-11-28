@@ -11,14 +11,15 @@ def isInt(variable): #determines if an inputted variable can be a string
         return False
 
 def monthsToYears(monthsAdd):
-    months = monthsAdd % 12
-    years = int(monthsAdd / 12)
+    months = monthsAdd % 13
+    years = int(monthsAdd / 13)
     return months, years
 
 def daysToMonth(daysAdd, time, nowTime): #this is if the number of days exceed the amount of days in the month
     currentDaysInMonth = calendar.monthrange(time.year, time.month)[1] #https://stackoverflow.com/questions/9481136/how-to-find-number-of-days-in-the-current-month
     months = time.month
     days = daysAdd
+    years = 0
     while True:
         if days > currentDaysInMonth:
             months = months + 1
@@ -26,15 +27,17 @@ def daysToMonth(daysAdd, time, nowTime): #this is if the number of days exceed t
             days = difference
         else:
             days = days % (currentDaysInMonth + 1)
-        months, years = monthsToYears(months)
-        monthSec, years = monthsToYears(months + time.month)
-        if monthSec == 0:
-            monthSec = 12
-        currentDaysInMonth = calendar.monthrange(time.year + years, monthSec)[1]
+        
+        tempMonth = months
+        months = monthsToYears(months)[0]
+        years = years + monthsToYears(tempMonth)[1]
+        if months == 0:
+            months = 1
+        currentDaysInMonth = calendar.monthrange(time.year + years, months)[1]
         if days <= currentDaysInMonth:
             break
     
-    return days, months
+    return days, months, years
     
 
 
@@ -58,12 +61,13 @@ def timeAddition(timeChange, now = datetime.datetime.now(), nowTime = True):
     hours, days = hoursToDays(timeChange["hour"] + now.hour)
     timeChange["hour"] = hours
     timeChange["day"] = timeChange["day"] + days
-    days, months = daysToMonth(timeChange["day"] + now.day, now, nowTime)
+    days, months, years = daysToMonth(timeChange["day"] + now.day, now, nowTime)
     timeChange["day"] = days
     timeChange["month"] = timeChange["month"] + months
+    timeChange["year"] = timeChange["year"] + years + now.year
     months, years = monthsToYears(timeChange["month"])
     timeChange["month"] = months
-    timeChange["year"] = timeChange["year"] + years + now.year
+    timeChange["year"] - timeChange["year"] + years
     if timeChange["month"] == 0:
         timeChange["month"] = 12
     if timeChange["day"] == 0:
@@ -74,7 +78,7 @@ def puncRemove(string):
     string = string.replace(".","")
     string = string.replace(",","")
     string = string.replace("?","")
-    string = string.replace(":","")
+    #string = string.replace(":","")
     string = string.replace("/","")
     return string
 
@@ -237,8 +241,8 @@ def specificTimeDecipher(numberLoc, words, specificTimeLoc, timeSection): #will 
             month = isNearMonth(words, numberLoc[i], months, monthAsNumber) #this will determine if the month was mentioned
             if month != None:
                 time["month"] = month
-                if len(words[numberLoc[i]]) == 4:
-                    time["year"] = int(words[numberLoc[i]])
+                if len(removeLetters(words[numberLoc[i]])) == 4:
+                    time["year"] = int(removeLetters(words[numberLoc[i]]))
                 elif len(removeLetters(words[numberLoc[i]])) == 2 or len(removeLetters(words[numberLoc[i]])) == 1:
                     time["day"] = int(removeLetters(words[numberLoc[i]]))
                 break
@@ -317,9 +321,9 @@ def reminderStatement(words, reminderSection): #this will put the reminder toget
 
 def specificTimeClean(specTime, addTime): #this is to make the specific time make sense, for example if you want a reminder at 3 am and its currently at 5pm you want 3 am the next day not the same day
     now = datetime.datetime.now()
-    if specTime["hour"] != 0 and addTime["day"] == 0 and specTime["day"] == 0 and None != specTime["hour"]:
+    if addTime["day"] == 0 and specTime["day"] == 0 and None != specTime["hour"]:
         if specTime["minute"] != None:
-            if now.hour > specTime["hour"]:
+            if now.hour > specTime["hour"] or (now.hour == specTime["hour"] and now.minute > specTime["minute"]):
                 addTime["day"] = addTime["day"] + 1
         elif now.hour >= specTime["hour"]:
             addTime["day"] = addTime["day"] + 1
@@ -377,6 +381,9 @@ def setReminder(command, user, write = True):
 
     addTimeAddition = addTimeDecipher(numberLoc, words, TimeLoc) #this is if time addition is needed
     futureTime = specificTimeDecipher(numberLoc, words, TimeLoc, timeSection) #this is if a specific time is specified
+    year = True
+    if futureTime["year"] == 0:
+        year = False
     addTimeAddition = specificTimeClean(futureTime, addTimeAddition)
     now = datetime.datetime.now() #need to do this since you can't have 0 year and 0 month
     futurePlusCurrent = futureTime
@@ -404,6 +411,8 @@ def setReminder(command, user, write = True):
         futurePlusCurrent["year"] = now.year
     
     time = timeAddition(addTimeAddition, dictToDateTime(futurePlusCurrent), False) #adding them since people may have specified some parts of the desired time and not specified the other parts
+    #if False == year: #a little fix from a slight error timeAddition makes
+        #time["year"] = futureTime["year"]
     reminder = reminderStatement(words, reminderSection)
     timeSentence = reminderStatement(words, timeSection) #just to check where the program thinks the time is
     dateTime = dictToDateTime(time) #converting the dictionary to a datetime struct because it would automatically send out an error if there is an illegal date or time (example month 0 cannot exist and minute 67 can't exits)
